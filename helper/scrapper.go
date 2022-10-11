@@ -6,12 +6,13 @@ import (
 	"context"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/gocolly/colly"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func Scrapper() {
+func scrapper() {
 	c := colly.NewCollector()
 
 	// Find and visit all links
@@ -118,4 +119,23 @@ func Scrapper() {
 	})
 
 	c.Visit("https://birimler.atauni.edu.tr/saglik-kultur-ve-spor-daire-baskanligi/")
+}
+
+func TickerForScraping() {
+	ticker := time.NewTicker(5 * time.Hour)
+	quit := make(chan struct{})
+	go func() {
+		log.Println("SCRAPER STARTED")
+		for {
+			select {
+			case <-ticker.C:
+				scrapper()
+
+			case <-quit:
+				ticker.Stop()
+				return
+			}
+		}
+	}()
+	<-quit
 }

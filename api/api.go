@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cache"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -16,6 +18,15 @@ func ApiRunner() {
 		ServerHeader: "Fiber",
 		AppName:      "Atayemek API",
 	})
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+	}))
+
+	app.Use(cache.New(cache.Config{
+		Expiration:   30 * time.Minute,
+		CacheControl: true,
+	}))
 
 	Setup(app)
 

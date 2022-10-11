@@ -3,6 +3,7 @@ package main
 import (
 	"atayemekapi/api"
 	"atayemekapi/database"
+	"atayemekapi/helper"
 )
 
 func init() {
@@ -10,7 +11,7 @@ func init() {
 }
 
 func main() {
-	// helper.Scrapper()
+	go helper.TickerForScraping()
 	api.ApiRunner()
 
 }
