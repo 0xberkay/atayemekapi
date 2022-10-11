@@ -3,6 +3,7 @@ package api
 import (
 	"atayemekapi/database"
 	"atayemekapi/models"
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,6 +25,7 @@ func ApiRunner() {
 func Setup(app *fiber.App) {
 	api := app.Group("/api")
 	api.Get("/announces", GetAllAnnounces)
+	api.Get("/update", IsUpdateTrue)
 
 	menu := api.Group("/menu")
 	menu.Get("/all", GetAllMenu)
@@ -88,6 +90,21 @@ func GetTodayMenu(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"success": true,
 		"menu":    menu,
+	})
+
+}
+
+func IsUpdateTrue(c *fiber.Ctx) error {
+	update := os.Getenv("update")
+	if update == "true" {
+		return c.JSON(fiber.Map{
+			"success": true,
+			"update":  true,
+		})
+	}
+	return c.JSON(fiber.Map{
+		"success": true,
+		"update":  false,
 	})
 
 }
