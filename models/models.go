@@ -6,6 +6,13 @@ type Menu struct {
 	MenuItems []MenuItem
 }
 
+type Announce struct {
+	Link  string
+	Title string
+	Date  string
+	Text  string
+}
+
 type MenuItem struct {
 	Food string
 	Gram string
