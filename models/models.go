@@ -4,6 +4,7 @@ type Menu struct {
 	Link      string
 	Date      string
 	MenuItems []MenuItem
+	TotelGram int
 }
 
 type Announce struct {

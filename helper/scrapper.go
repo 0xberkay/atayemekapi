@@ -5,6 +5,7 @@ import (
 	"atayemekapi/models"
 	"context"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 
@@ -91,6 +92,12 @@ func scrapper() {
 										menuItem.Food = e.Text
 									} else if count%2 == 1 {
 										menuItem.Gram = e.Text
+										//convert gram to int and add it to total gram
+										gram, err := strconv.Atoi(e.Text)
+										if err != nil {
+											log.Println(err)
+										}
+										menu.TotelGram += gram
 									}
 								}
 								count++
