@@ -25,7 +25,13 @@ func ApiRunner() {
 
 	Setup(app)
 
-	app.Listen(":3000")
+	//heroku port
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+
+	app.Listen(":" + port)
 }
 
 func Setup(app *fiber.App) {
