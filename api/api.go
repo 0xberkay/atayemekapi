@@ -23,18 +23,26 @@ func ApiRunner() {
 		AllowOrigins: "*",
 	}))
 
-	app.Use(cache.New(cache.Config{
-		Expiration:   30 * time.Minute,
-		CacheControl: true,
-	}))
-
 	Setup(app)
 
 	app.Listen(":3000")
 }
 
 func Setup(app *fiber.App) {
-	api := app.Group("/api")
+	api := app.Group("/api", func(c *fiber.Ctx) error {
+		if c.Get("api_key") != os.Getenv("api_key") {
+			return c.Status(401).JSON(fiber.Map{
+				"success": false,
+				"message": "Unauthorized",
+			})
+		}
+		return c.Next()
+	})
+
+	api.Use(cache.New(cache.Config{
+		Expiration:   30 * time.Minute,
+		CacheControl: true,
+	}))
 	api.Get("/announces", GetAllAnnounces)
 	api.Get("/update", IsUpdateTrue)
 
