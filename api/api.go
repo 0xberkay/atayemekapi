@@ -36,7 +36,7 @@ func ApiRunner() {
 
 func Setup(app *fiber.App) {
 	api := app.Group("/api", func(c *fiber.Ctx) error {
-		if c.Get("api_key") != os.Getenv("api_key") {
+		if c.Get("api_key") != database.Api_key {
 			return c.Status(401).JSON(fiber.Map{
 				"success": false,
 				"message": "Unauthorized",
@@ -50,7 +50,6 @@ func Setup(app *fiber.App) {
 		CacheControl: true,
 	}))
 	api.Get("/announces", GetAllAnnounces)
-	api.Get("/update", IsUpdateTrue)
 
 	menu := api.Group("/menu")
 	menu.Get("/all", GetAllMenu)
@@ -119,17 +118,6 @@ func GetTodayMenu(c *fiber.Ctx) error {
 
 }
 
-func IsUpdateTrue(c *fiber.Ctx) error {
-	update := os.Getenv("update")
-	if update == "true" {
-		return c.JSON(fiber.Map{
-			"success": true,
-			"update":  true,
-		})
-	}
-	return c.JSON(fiber.Map{
-		"success": true,
-		"update":  false,
-	})
-
+func TodayQueue(c *fiber.Ctx) error {
+	return c.JSON(fiber.Map{})
 }
