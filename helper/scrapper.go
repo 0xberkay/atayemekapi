@@ -129,7 +129,7 @@ func scrapper() {
 }
 
 func TickerForScraping() {
-	ticker := time.NewTicker(8 * time.Second)
+	ticker := time.NewTicker(8 * time.Hour)
 	quit := make(chan struct{})
 	go func() {
 		log.Println("SCRAPER STARTED")
