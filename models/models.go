@@ -5,6 +5,7 @@ type Menu struct {
 	Date      string
 	MenuItems []MenuItem
 	TotelGram int
+	MenuImage string `json:"menuImage"`
 }
 
 type Announce struct {
