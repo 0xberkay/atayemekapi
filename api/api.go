@@ -3,9 +3,11 @@ package api
 import (
 	"atayemekapi/database"
 	"atayemekapi/models"
+	"encoding/json"
 	"os"
 	"time"
 
+	_ "github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -17,6 +19,8 @@ func ApiRunner() {
 		Prefork:      false,
 		ServerHeader: "Fiber",
 		AppName:      "Atayemek API",
+		JSONEncoder:  json.Marshal,
+		JSONDecoder:  json.Unmarshal,
 	})
 
 	app.Use(cors.New(cors.Config{
@@ -45,11 +49,15 @@ func Setup(app *fiber.App) {
 		return c.Next()
 	})
 
-	api.Use(cache.New(cache.Config{
-		Expiration:   30 * time.Minute,
+	api.Post("/save", Save)
+
+	app.Use(cache.New(cache.Config{
+		Expiration:   25 * time.Minute,
 		CacheControl: true,
 	}))
 	api.Get("/announces", GetAllAnnounces)
+
+	api.Get("/add", Save)
 
 	menu := api.Group("/menu")
 	menu.Get("/all", GetAllMenu)
@@ -118,6 +126,35 @@ func GetTodayMenu(c *fiber.Ctx) error {
 
 }
 
-func TodayQueue(c *fiber.Ctx) error {
-	return c.JSON(fiber.Map{})
+func Save(c *fiber.Ctx) error {
+	p := new(models.AdminData)
+
+	if err := c.BodyParser(p); err != nil {
+		return c.Status(400).JSON(fiber.Map{
+			"success": false,
+			"message": "Bad Request",
+			"err":     err,
+		})
+	}
+
+	if p.Admin != database.Admin {
+		return c.Status(401).JSON(fiber.Map{
+			"success": false,
+			"message": "Unauthorized",
+		})
+
+	}
+
+	_, err := database.DB.Collection("foods").UpdateOne(c.Context(), bson.M{"date": p.Date}, bson.M{"$set": bson.M{"menuimage": p.Link}})
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{
+			"success": false,
+			"message": "Internal Server Error",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"success": true,
+		"message": "Saved",
+	})
 }

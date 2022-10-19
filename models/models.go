@@ -5,7 +5,7 @@ type Menu struct {
 	Date      string
 	MenuItems []MenuItem
 	TotelGram int
-	MenuImage string `json:"menuImage"`
+	MenuImage string
 }
 
 type Announce struct {
@@ -18,4 +18,10 @@ type Announce struct {
 type MenuItem struct {
 	Food string
 	Gram string
+}
+
+type AdminData struct {
+	Admin string `json:"admin"`
+	Link  string `json:"link"`
+	Date  string `json:"date"`
 }

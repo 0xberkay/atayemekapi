@@ -14,6 +14,7 @@ import (
 var (
 	DB      *mongo.Database
 	Api_key string
+	Admin   string
 )
 
 func Connect() {
@@ -25,6 +26,8 @@ func Connect() {
 
 	url := os.Getenv("mongo_url")
 	Api_key = os.Getenv("api_key")
+
+	Admin = os.Getenv("admin")
 
 	log.Println("Connecting to MongoDB...")
 	serverAPIOptions := options.ServerAPI(options.ServerAPIVersion1)
